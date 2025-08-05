@@ -4,29 +4,29 @@
 <header class="bg-dark py-5">
     <div class="container px-4 px-lg-5 my-5">
         <div class="text-center text-white">
-            <h1 class="display-4 fw-bolder">Login!!</h1>
-            <p class="lead fw-normal text-white-50 mb-0">shope with us. make your day great!!!</p>
+            <h1 class="display-4 fw-bolder">Register!!</h1>
+            <p class="lead fw-normal text-white-50 mb-0">Create your account to shop from us. make your day great!!!</p>
         </div>
     </div>
 </header>
 
-<br> <br>  <br> <br> <br>
+<br> <br>
 
 <div class="container">
     <div class="row">
         <center>
             <div class="col-8">
                    
-                <form method="post" action="{% url 'login_view' %}">
+                <form method="post" action="{% url 'user_register' %}">
                     {% csrf_token %}
                     {% if error %}
                         <div class="alert alert-danger" role="alert">
                             {{ error }}
                         </div>
                     {% endif %}
-                    <div class="mb-3">
+                    <!-- <div class="mb-3">
                         <input type="text" class="form-control" name="username" placeholder="Enter you username here...">
-                        <!-- <div id="emailHelp" class="form-text">We'll never share your username with anyone else.</div> -->
+                        <!-- <div id="emailHelp" class="form-text">We'll never share your username with anyone else.</div> --
                     </div>
                     <div class="mb-3">
                         <input type="password" class="form-control" name="password" id="exampleInputPassword1" placeholder="Enter you password..">
@@ -35,8 +35,11 @@
                         <input type="checkbox" class="form-check-input" id="exampleCheck1">
                         <label class="form-check-label" for="exampleCheck1">Check me out</label>
                     </div> -->
-                    <button type="submit" class="btn btn-secondary">Login</button>
-                    <p>don't you have an account? <a href="{% url 'user_register' %}">Singup</a></p>
+                    
+                    {{ form.as_p }}
+                    <br>
+                    <button type="submit" class="btn btn-secondary">Register</button> 
+                    <p>do you have an account? <a href="{% url 'login_view' %}">login</a></p>
                 </form>
 
             </div>
