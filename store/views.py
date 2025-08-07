@@ -5,13 +5,15 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from .import forms
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
+@login_required(login_url='login_view')
 def home(request):
     products = Product.objects.all()
     return render(request, 'home.html', {'products' : products})
 
-
+@login_required(login_url='login_view')
 def about(request):
     return render(request, 'about.html', {})
 
@@ -46,6 +48,13 @@ def user_register(request):
     return render(request, 'user_register.html', {'form':form})
 
 
-def product(request,id):
+def product(request, id):
     product = Product.objects.get(id=id)
     return render(request, 'product.html', {'product':product})
+
+@login_required(login_url='login_view')
+def category(request, category_name):
+    category = Category.objects.get(name=category_name)
+    products = Product.objects.filter(category=category)
+    return render(request, 'home.html', {'products' : products})
+    
