@@ -44,3 +44,8 @@ def user_register(request):
             form.save()
             return render(request, 'login_view.html', {})
     return render(request, 'user_register.html', {'form':form})
+
+
+def product(request,id):
+    product = Product.objects.get(id=id)
+    return render(request, 'product.html', {'product':product})

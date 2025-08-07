@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<!-- <header class="bg-dark py-5">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="text-center text-white">
+                    <h1 class="display-4 fw-bolder">about us...</h1>
+                    <p class="lead fw-normal text-white-50 mb-0">shope with us. make your day great!!!</p>
+                </div>
+            </div>
+        </header> -->
+        <br> <br>
+
+        <div class="container">
+            <div class="row">
+                <center>
+                    <div class="col-8">
+                        <div class="card mb-3">
+                            <div class="row g-0">
+                                <div class="col-md-4">
+                                    <img src="{{ product.image.url }}" class="img-fluid rounded-start" alt="...">
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ product.name }}</h5>
+                                        <p class="card-text">{{ product.description }}</p>
+                                        {% if product.in_sale %}
+                                            <p class="card-text"><small class="text-body-secondary"><strike>RS {{ product.price }}/-</strike> &nbsp; RS {{ product.sale_price }}/-  </small></p>
+                                            <!-- <strike><p class="card-text"><small class="text-body-secondary"></small></p></strike> -->
+                                        {% else %}
+                                            <p class="card-text"><small class="text-body-secondary">RS {{ product.price }}/-  </small></p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </center>
+            </div>
+
+            <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> 
+{% endblock %}
