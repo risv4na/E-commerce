@@ -8,12 +8,12 @@ from .import forms
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
-@login_required(login_url='login_view')
+# @login_required(login_url='login_view')
 def home(request):
     products = Product.objects.all()
     return render(request, 'home.html', {'products' : products})
 
-@login_required(login_url='login_view')
+# @login_required(login_url='login_view')
 def about(request):
     return render(request, 'about.html', {})
 
@@ -52,7 +52,7 @@ def product(request, id):
     product = Product.objects.get(id=id)
     return render(request, 'product.html', {'product':product})
 
-@login_required(login_url='login_view')
+# @login_required(login_url='login_view')
 def category(request, category_name):
     category = Category.objects.get(name=category_name)
     products = Product.objects.filter(category=category)

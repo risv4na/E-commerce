@@ -9,34 +9,65 @@
                 </div>
             </div>
         </header> -->
-        <br> <br>
+<br> <br>
 
-        <div class="container">
-            <div class="row">
-                <center>
-                    <div class="col-8">
-                        <div class="card mb-3">
-                            <div class="row g-0">
-                                <div class="col-md-4">
-                                    <img src="{{ product.image.url }}" class="img-fluid rounded-start" alt="...">
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="card-body">
-                                        <h5 class="card-title">{{ product.name }}</h5>
-                                        <p class="card-text">{{ product.description }}</p>
-                                        {% if product.in_sale %}
-                                            <p class="card-text"><small class="text-body-secondary"><strike>RS {{ product.price }}/-</strike> &nbsp; RS {{ product.sale_price }}/-  </small></p>
-                                            <!-- <strike><p class="card-text"><small class="text-body-secondary"></small></p></strike> -->
-                                        {% else %}
-                                            <p class="card-text"><small class="text-body-secondary">RS {{ product.price }}/-  </small></p>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            </div>
+<div class="container">
+    <div class="row">
+        <center>
+            <div class="col-8">
+                <div class="card mb-3">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <img src="{{ product.image.url }}" class="img-fluid rounded-start" alt="...">
                         </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ product.name }}</h5>
+                                <p class="card-text">{{ product.description }}</p>
+                                {% if product.in_sale %}
+                                    <p class="card-text"><small class="text-body-secondary"><strike>RS {{ product.price }}/-</strike> &nbsp; RS {{ product.sale_price }}/-  </small></p>
+                                            <!-- <strike><p class="card-text"><small class="text-body-secondary">k</small></p></strike> -->
+                                {% else %}
+                                    <p class="card-text"><small class="text-body-secondary">RS {{ product.price }}/-  </small></p>
+                                {% endif %}
+                            </div>
+                        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                            <div class="text-center">
+                                <button class="btn btn-outline-dark mt-auto" value="{{ product.id }}" id="add-cart">Add To Cart</button>
+                                <a class="btn btn-outline-dark mt-auto" href="{% url 'home' %}">Home</a>
+                            </div>
+                        </div>       
                     </div>
-                </center>
+                </div>
             </div>
+        </center>
+    </div>
+</div>
 
-            <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> 
+<br> <br> <br> <br> <br> <br> <br> <br> <br> <br> 
+
+<script>
+    $(document).on('click', '#add-cart', function(e){
+        e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'cart_add' %}",
+            data: {
+                product_id: $('#add-cart').val(),
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                action: 'post',
+            },
+
+            success: function(json){
+                console.log(json)
+                document.getElementById('cart_quantity').textContent = json.cart_quantity
+            },
+
+            error: function(xhr, errmsg, err){
+                console.log('error')
+            }
+        });
+    })
+</script>
+
 {% endblock %}
