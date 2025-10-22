@@ -1,1 +1,95 @@
-<h1>Summery!!!!</h1>
+
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<!-- <header class="bg-dark py-5">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="text-center text-white">
+                    <h1 class="display-4 fw-bolder">about us...</h1>
+                    <p class="lead fw-normal text-white-50 mb-0">shope with us. make your day great!!!</p>
+                </div>
+            </div>
+        </header> -->
+<br> <br>
+{% if cart_products %}
+{% for product in cart_products %}
+<div class="container">
+    <div class="row">
+        <center>
+        </div>
+        <div class="col-8">
+            <div class="card mb-3">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        <img src="{{ product.image.url }}" class="img-fluid rounded-start" alt="...">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text">{{ product.description }}</p>
+                            {% if product.in_sale %}
+                                <p class="card-text"><small class="text-body-secondary"><strike>RS {{ product.price }}/-</strike> &nbsp; RS {{ product.sale_price }}/-  </small></p>
+                                        <!-- <strike><p class="card-text"><small class="text-body-secondary">k</small></p></strike> -->
+                            {% else %}
+                                <p class="card-text"><small class="text-body-secondary">RS {{ product.price }}/-  </small></p>
+                            {% endif %}
+
+                            <select class="form-select" aria-label="Default select example" id="product-quantity">
+                                
+                                    {% for key, value in quantity.items %}
+                                        {% if key == product.id|slugify %}
+                                            <option selected>{{ value }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                            
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                            </select>
+                        </div>
+                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                        <div class="text-center">
+                            <!-- <button class="btn btn-outline-dark mt-auto" value="{{ product.id }}" id="remove-cart">Remove from Cart</button> -->
+                            <a class="btn btn-outline-dark mt-auto" href="{% url 'home' %}">Home</a>
+                        </div>
+                    </div>       
+                </div>
+            </div>
+        </center>
+    </div>
+</div>
+{% endfor %}
+{% else %}
+
+<center>empty cart!</center> 
+{% endif %}
+<br> <br> <br> <br> <br> <br> <br> <br> <br> <br> 
+
+<script>
+    $(document).on('click', '#remove-cart', function(e){
+        e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'remove_cart' %}",
+            data: {
+                product_id: $('#remove-cart').val(),
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                action: 'post',
+            },
+
+            success: function(json){
+                console.log(json)
+                document.getElementById('cart_quantity').textContent = json.cart_quantity
+            },
+
+            error: function(xhr, errmsg, err){
+                console.log('error')
+            }
+        });
+    })
+</script>
+
+{% endblock %}
