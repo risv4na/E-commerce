@@ -9,21 +9,21 @@ def cart_summery(request):
     quantity = cart.get_quantity()
     return render(request, 'cart_summery.html',{'cart_products':cart_products, 'quantity':quantity})
 
-def remove_cart(request):
+def remove_cart_item(request):
+    print('heyy here at remove')
     cart = Cart(request)
     if request.POST.get('action') == 'post':
         product_id = int(request.POST.get('product_id'))
-        product = get_object_or_404(Product, id=product_id)
-        cart.remove(product)
+        cart.remove(product = product_id)
     print(request.session['session_key'])
-    print(cart.cart)
-    cart_quantity = cart.__len__()
-    response = JsonResponse({'cart_quantity': cart_quantity, })
+   
+    response = JsonResponse({'id':product_id})
     return response
 
 
 
 def cart_update(request):
+    print("update!!!")
     cart = Cart(request)
     if request.POST.get('action') == 'post':
         product_id = int(request.POST.get('product_id'))

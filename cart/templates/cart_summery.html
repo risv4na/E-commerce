@@ -54,7 +54,8 @@
                         <div class="text-center">
                             <!-- <button class="btn btn-outline-dark mt-auto" value="{{ product.id }}" id="remove-cart">Remove from Cart</button> -->
                             <a class="btn btn-secondary" href="{% url 'home' %}">Home</a>
-                            <button type="button" data-index="{{ product.id }}" class="btn btn-secondary update-cart">update</button>
+                            <button type="button" data-index="{{ product.id }}" class="btn btn-secondary update-cart">Update</button>
+                            <button type="button" data-index="{{ product.id }}" class="btn btn-danger remove-item">Remove</button>
                         </div>
                     </div>       
                 </div>
@@ -70,6 +71,29 @@
 <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> 
 
 <script>
+    $(document).on('click', '.remove-item', function(e){
+        console.log("worked this remove")
+        e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'remove_cart_item' %}",
+            data: {
+                product_id: $(this).data('index'),
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                action: 'post',
+            },
+
+            success: function(json){
+                console.log(json)
+                location.reload();
+            },
+
+            error: function(xhr, errmsg, err){
+                console.log('error')
+            }
+        });
+    })
+
     $(document).on('click', '.update-cart', function(e){
         e.preventDefault();
         var productid = $(this).data('index');
@@ -85,7 +109,7 @@
 
             success: function(json){
                 console.log(json)
-                location.reload
+                location.reload();
             },
 
             error: function(xhr, errmsg, err){
