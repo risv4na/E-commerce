@@ -34,7 +34,7 @@
                                 <p class="card-text"><small class="text-body-secondary">RS {{ product.price }}/-  </small></p>
                             {% endif %}
 
-                            <select class="form-select" aria-label="Default select example" id="product-quantity">
+                            <select class="form-select" aria-label="Default select example" id="select{{product.id}}">
                                 
                                     {% for key, value in quantity.items %}
                                         {% if key == product.id|slugify %}
@@ -53,7 +53,8 @@
                     <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                         <div class="text-center">
                             <!-- <button class="btn btn-outline-dark mt-auto" value="{{ product.id }}" id="remove-cart">Remove from Cart</button> -->
-                            <a class="btn btn-outline-dark mt-auto" href="{% url 'home' %}">Home</a>
+                            <a class="btn btn-secondary" href="{% url 'home' %}">Home</a>
+                            <button type="button" data-index="{{ product.id }}" class="btn btn-secondary update-cart">update</button>
                         </div>
                     </div>       
                 </div>
@@ -69,20 +70,22 @@
 <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> 
 
 <script>
-    $(document).on('click', '#remove-cart', function(e){
+    $(document).on('click', '.update-cart', function(e){
         e.preventDefault();
+        var productid = $(this).data('index');
         $.ajax({
             type: 'POST',
-            url: "{% url 'remove_cart' %}",
+            url: "{% url 'cart_update' %}",
             data: {
-                product_id: $('#remove-cart').val(),
+                product_id: productid,
+                product_quantity: $('#select' + productid + ' option:selected').text(),
                 csrfmiddlewaretoken: '{{ csrf_token }}',
                 action: 'post',
             },
 
             success: function(json){
                 console.log(json)
-                document.getElementById('cart_quantity').textContent = json.cart_quantity
+                location.reload
             },
 
             error: function(xhr, errmsg, err){

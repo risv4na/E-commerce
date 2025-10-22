@@ -21,15 +21,26 @@ def remove_cart(request):
     response = JsonResponse({'cart_quantity': cart_quantity, })
     return response
 
+
+
 def cart_update(request):
-    print('cart update')
-    return render(request, 'cart_update.html')
+    cart = Cart(request)
+    if request.POST.get('action') == 'post':
+        product_id = int(request.POST.get('product_id'))
+        product_quantity = int(request.POST.get('product_quantity'))
+
+        cart.update(product=product_id, product_quantity=product_quantity)
+
+        response = JsonResponse({'qty':product_quantity})
+        return response
+
+
 
 def cart_add(request):
     cart = Cart(request)
     if request.POST.get('action') == 'post':
         product_id = int(request.POST.get('product_id'))
-        product_quantity = request.POST.get('product_quantity')
+        product_quantity = int(request.POST.get('product_quantity'))
         print(product_quantity)
         product = get_object_or_404(Product, id=product_id)
         cart.add(product, product_quantity)
