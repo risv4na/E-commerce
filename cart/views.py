@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404,redirect
 from django.http import HttpResponse, JsonResponse
 from .cart import Cart
 from store.models import Product
+from django.contrib import messages
 
 def cart_summery(request):
     cart = Cart(request)
@@ -17,7 +18,7 @@ def remove_cart_item(request):
     if request.POST.get('action') == 'post':
         product_id = int(request.POST.get('product_id'))
         cart.remove(product = product_id)
-    print(request.session['session_key'])
+    messages.success(request, "Item deleted from cart..")
    
     response = JsonResponse({'id':product_id})
     return response
@@ -32,7 +33,7 @@ def cart_update(request):
         product_quantity = int(request.POST.get('product_quantity'))
 
         cart.update(product=product_id, product_quantity=product_quantity)
-
+        messages.success(request, "Your cart has been updated..")
         response = JsonResponse({'qty':product_quantity})
         return response
 
@@ -43,12 +44,12 @@ def cart_add(request):
     if request.POST.get('action') == 'post':
         product_id = int(request.POST.get('product_id'))
         product_quantity = int(request.POST.get('product_quantity'))
-        print(product_quantity)
         product = get_object_or_404(Product, id=product_id)
         cart.add(product, product_quantity)
-    print(request.session['session_key'])
-    print(cart.cart)
+    
+    product_name = product.name
+
+    messages.success(request, f"{product_name} Added to cart.")
     cart_quantity = cart.__len__()
     response = JsonResponse({'cart_quantity': cart_quantity, })
-
     return response
