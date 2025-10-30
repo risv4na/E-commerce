@@ -58,3 +58,21 @@ def category(request, category_name):
     products = Product.objects.filter(category=category)
     return render(request, 'home.html', {'products' : products})
     
+
+
+def update_user(request):
+    if request.user.is_authenticated: 
+        current_user = User.objects.get(id=request.user.id)
+        user_update_form = forms.UpdateUserFrom (request.POST or None, instance=current_user )
+
+        if user_update_form.is_valid():
+            user_update_form.save()
+
+            login(request,current_user)
+            messages.success(request,'User has been updated!!!')
+            return redirect('home')
+        return render(request, "update_user.html", {'user_update_form':user_update_form})
+    else:
+        messages.success(request, "You must be logged in to access this page..")
+        return redirect('home')
+ 

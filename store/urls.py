@@ -9,4 +9,5 @@ urlpatterns = [
     path('user_register/', user_register, name='user_register'),
     path('product/<int:id>/', product, name='product'),
     path('category/<str:category_name>/', category, name='category'),
+    path('update_user/', update_user, name='update_user'),
 ]
