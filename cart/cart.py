@@ -53,3 +53,23 @@ class Cart:
         self.session.modified = True
 
         return self.cart
+    
+    def cart_total(self):
+        print('heyyy')
+        product_ids = self.cart.keys()
+        products = Product.objects.all()
+        cart = self.cart
+
+        total = 0
+        for key in products:
+
+            if str(key.id) in list(product_ids):
+                qty = int(cart[str(key.id)])
+                if key.in_sale:
+                    price = key.sale_price
+                    total = total + (qty*price)
+                else:
+                    price = key.price
+                    total = total + (qty*price)
+        return total
+    

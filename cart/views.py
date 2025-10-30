@@ -7,7 +7,9 @@ def cart_summery(request):
     cart = Cart(request)
     cart_products = cart.get_products()
     quantity = cart.get_quantity()
-    return render(request, 'cart_summery.html',{'cart_products':cart_products, 'quantity':quantity})
+    total = cart.cart_total()
+    print(total)
+    return render(request, 'cart_summery.html',{'cart_products':cart_products, 'quantity':quantity, 'total':total})
 
 def remove_cart_item(request):
     print('heyy here at remove')
