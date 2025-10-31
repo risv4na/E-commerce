@@ -76,3 +76,25 @@ def update_user(request):
         messages.success(request, "You must be logged in to access this page..")
         return redirect('home')
  
+
+def update_password(request):
+    if request.user.is_authenticated:
+        current_user = request.user
+        if request.method == "POST":
+            form = forms.ChangePasswordForm(current_user, request.POST)
+            if form.is_valid():
+                form.save()
+                login(request,current_user)
+                messages.success(request,'Your password has been updated successfully!!')
+                return redirect('home')
+            else:
+                for error in list(form.errors.values()):
+                    messages.error(request,error)
+                form = forms.ChangePasswordForm(current_user)
+                return render(request, "update_password.html", {'form':form})
+        else:
+            form = forms.ChangePasswordForm(current_user)
+            return render(request, "update_password.html", {'form':form})
+    else:
+        messages.success(request, "You must be logged in to access this page..")
+        return redirect('home')
