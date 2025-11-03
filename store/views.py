@@ -98,3 +98,19 @@ def update_password(request):
     else:
         messages.success(request, "You must be logged in to access this page..")
         return redirect('home')
+
+
+def update_user_info(request):
+    if request.user.is_authenticated: 
+        current_user = CustomerProfile.objects.get(user__id=request.user.id)
+        update_form = forms.UserInfoForm(request.POST or None, instance=current_user )
+
+        if update_form.is_valid():
+            update_form.save()
+            messages.success(request,'User Profile has been updated!!!')
+            return redirect('home')
+        return render(request, "update_user_info.html", {'update_form':update_form})
+    else:
+        messages.success(request, "You must be logged in to access this page..")
+        return redirect('home')
+    # return render(request,'update_user_info.html')

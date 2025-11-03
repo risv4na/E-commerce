@@ -11,4 +11,6 @@ urlpatterns = [
     path('category/<str:category_name>/', category, name='category'),
     path('update_user/', update_user, name='update_user'),
     path('update_password/', update_password, name="update_password"),
+    path('update_user_info/', update_user_info, name='update_user_info'),
+
 ]
