@@ -1,6 +1,15 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
+    <form method="POST" action="{% url 'search_product' %}" >
+        {% csrf_token %}
+        <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Search products..." aria-label="Recipient's username" aria-describedby="button-addon2" name="searched" id="search_item">
+        <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Search</button>
+        </div>
+    </div>
+    </form>
         <header class="bg-dark py-5">
             <div class="container px-4 px-lg-5 my-5">
                 <div class="text-center text-white">
@@ -58,4 +67,13 @@
                 </div>
             </div>
         </section>
+
+        <script>
+            $( function() {
+            
+            $( "#search_item" ).autocomplete({
+                source: '{% url 'search_product' %}'
+            });
+            } );
+        </script>
 {% endblock %}

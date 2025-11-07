@@ -6,6 +6,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from .import forms
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
+from django.http import JsonResponse
 
 # Create your views here.
 # @login_required(login_url='login_view')
@@ -113,4 +115,34 @@ def update_user_info(request):
     else:
         messages.success(request, "You must be logged in to access this page..")
         return redirect('home')
-    # return render(request,'update_user_info.html')
+
+
+# def search_product(request):
+#     if request.method == "POST":
+#         item = request.POST.get('searched')
+#         products = Product.objects.filter(Q(name__icontains=item) or Q())
+#         if products:
+#             return render(request, 'home.html', {'products' : products})
+#         else:
+#             messages.success(request,"No products found!!!")
+#             return redirect('home')
+
+def search_product(request):
+    if 'term' in request.GET:
+        print("got it",'term')
+        products = Product.objects.filter(Q(name__istartswith=request.GET.get('term')) | Q(description__icontains=request.GET.get('term'))) 
+        name = list()
+        
+        for product_name in products:
+            name.append(product_name.name)
+        return JsonResponse(name ,safe=False)
+    if request.method == 'POST':
+        search = request.POST.get('searched')
+        products = Product.objects.filter(
+            Q(name__icontains=search) | 
+            Q(description__icontains=search)
+        )
+
+    
+        return render(request, 'home.html', {'products' : products})
+
