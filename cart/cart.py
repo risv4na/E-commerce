@@ -1,8 +1,9 @@
-from store.models import Product
+from store.models import Product, CustomerProfile
 
 class Cart:
     def __init__(self, request):
-        
+
+        self.request = request
         self.session = request.session
         cart = self.session.get('session_key')
 
@@ -11,15 +12,27 @@ class Cart:
         
         self.cart = cart
     
-    def add(self, product, quantity):
-        product_id = str(product.id)
+    def add(self, product, quantity, db = False):
+        if db:
+            product_id = str(product)
+        else:
+            product_id = str(product.id)
 
         if product_id in self.cart:
             pass
         else:
-            self.cart[product_id] = str(quantity)
+            self.cart[product_id] = int(quantity)
 
         self.session.modified = True
+        print(self.cart)
+
+        if self.request.user.is_authenticated:
+            current_user = CustomerProfile.objects.get(user__id = self.request.user.id)
+            old_cart = str(self.cart)
+            old_cart = old_cart.replace("\'","\"")
+            current_user.old_cart = old_cart
+            current_user.save()
+
     def __len__(self):
         return len(self.cart)
     
@@ -38,6 +51,13 @@ class Cart:
 
         self.session.modified = True
 
+        if self.request.user.is_authenticated:
+            current_user = CustomerProfile.objects.get(user__id = self.request.user.id)
+            old_cart = str(self.cart)
+            old_cart = old_cart.replace("\'","\"")
+            current_user.old_cart = old_cart
+            current_user.save()
+
         
     
     def get_quantity(self):
@@ -52,10 +72,16 @@ class Cart:
         newcart[product_id] = product_quantity
         self.session.modified = True
 
+        if self.request.user.is_authenticated:
+            current_user = CustomerProfile.objects.get(user__id = self.request.user.id)
+            old_cart = str(self.cart)
+            old_cart = old_cart.replace("\'","\"")
+            current_user.old_cart = old_cart
+            current_user.save()
+
         return self.cart
     
     def cart_total(self):
-        print('heyyy')
         product_ids = self.cart.keys()
         products = Product.objects.all()
         cart = self.cart

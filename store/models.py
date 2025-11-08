@@ -7,7 +7,7 @@ from django.db.models.signals import post_save
 
 class CustomerProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    date_modified = models.DateTimeField(User, auto_now=True)
+    date_modified = models.DateTimeField(auto_now=True)
     phone = models.CharField(max_length=20, blank=True)
     address1 = models.CharField(max_length=200, blank=True)
     address2 = models.CharField(max_length=200, blank=True)
@@ -15,16 +15,10 @@ class CustomerProfile(models.Model):
     state = models.CharField(max_length=300, blank=True)
     country = models.CharField(max_length=30, blank=True)
     pincode = models.CharField(max_length=20, blank=True)
+    old_cart = models.CharField(max_length=1000, blank=True, null=True)
 
     def __str__(self):
         return self.user.username
-
-def create_profile(sender, instance, created, **kwargs):
-    if created:
-        user_profile = CustomerProfile(user=instance)
-        user_profile.save()
-
-post_save.connect(create_profile, sender=User)
 
 
 class Category(models.Model):

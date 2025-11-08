@@ -8,6 +8,8 @@ from .import forms
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.http import JsonResponse
+import json
+from cart.cart import Cart
 
 # Create your views here.
 # @login_required(login_url='login_view')
@@ -29,6 +31,19 @@ def login_view(request):
         print(user)
         if user:
             login(request,user)
+            current_user = CustomerProfile.objects.get(user__id=request.user.id)
+            current_user.save()
+
+            old_cart = current_user.old_cart
+            #converet db string into dictionary 
+            if old_cart:
+                converted_cart = json.loads(old_cart)
+                cart = Cart(request)
+
+                for key,value in converted_cart.items():
+                    cart.add(product=key, quantity=value, db=True)
+
+
             messages.success(request, 'You have been login succesfully.')
             return redirect('home')
         else:
@@ -45,8 +60,12 @@ def user_register(request):
     if request.method == 'POST':
         form = forms.SignUpForm(request.POST)
         if form.is_valid():
-            form.save()
-            return render(request, 'login_view.html', {})
+            user = form.save()
+            profile = CustomerProfile.objects.create(user=user)
+            profile.save()
+            update_form = forms.UserInfoForm(request.POST or None, instance=current_user )
+            return render(request, "update_user_info.html", {'update_form':update_form})
+            # return redirect('update_user_info')
     return render(request, 'user_register.html', {'form':form})
 
 
@@ -110,7 +129,7 @@ def update_user_info(request):
         if update_form.is_valid():
             update_form.save()
             messages.success(request,'User Profile has been updated!!!')
-            return redirect('home')
+            return redirect('login_view')
         return render(request, "update_user_info.html", {'update_form':update_form})
     else:
         messages.success(request, "You must be logged in to access this page..")
