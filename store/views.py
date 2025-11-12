@@ -57,16 +57,17 @@ def logout_view(request):
     return render(request, 'login_view.html', {})
 
 def user_register(request):
-    form = forms.SignUpForm()
+    form = SignUpForm()
     if request.method == 'POST':
-        form = forms.SignUpForm(request.POST)
+        form = SignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
             profile = CustomerProfile.objects.create(user=user)
             profile.save()
-            update_form = forms.UserInfoForm(request.POST or None, instance=current_user )
-            return render(request, "update_user_info.html", {'update_form':update_form})
-            # return redirect('update_user_info')
+            # current_user = CustomerProfile.objects.get(user=user)
+            # update_form = UserInfoForm(request.POST or None, instance=current_user )
+            # return render(request, "update_user_info.html", {'update_form':update_form})
+            return redirect('login_view')
     return render(request, 'user_register.html', {'form':form})
 
 
@@ -85,7 +86,7 @@ def category(request, category_name):
 def update_user(request):
     if request.user.is_authenticated: 
         current_user = User.objects.get(id=request.user.id)
-        user_update_form = forms.UpdateUserFrom (request.POST or None, instance=current_user )
+        user_update_form = UpdateUserFrom(request.POST or None, instance=current_user )
 
         if user_update_form.is_valid():
             user_update_form.save()
@@ -103,7 +104,7 @@ def update_password(request):
     if request.user.is_authenticated:
         current_user = request.user
         if request.method == "POST":
-            form = forms.ChangePasswordForm(current_user, request.POST)
+            form = ChangePasswordForm(current_user, request.POST)
             if form.is_valid():
                 form.save()
                 login(request,current_user)
@@ -112,10 +113,10 @@ def update_password(request):
             else:
                 for error in list(form.errors.values()):
                     messages.error(request,error)
-                form = forms.ChangePasswordForm(current_user)
+                form = ChangePasswordForm(current_user)
                 return render(request, "update_password.html", {'form':form})
         else:
-            form = forms.ChangePasswordForm(current_user)
+            form = ChangePasswordForm(current_user)
             return render(request, "update_password.html", {'form':form})
     else:
         messages.success(request, "You must be logged in to access this page..")
@@ -170,9 +171,11 @@ def search_product(request):
 
 def add_shipping_address(request):
     if request.user.is_authenticated: 
-        shipping_user = ShippingAddress.objects.get(user__id=request.user.id)
+        if ShippingAddress.objects.filter(user__id=request.user.id).exists():
+            shipping_user = ShippingAddress.objects.get(user__id=request.user.id)
+        else:
+            shipping_user = ShippingAddress.objects.create(user=request.user)
         shipping_form = ShippingForm(request.POST or None, instance=shipping_user)
-
         if shipping_form.is_valid():
             shipping_form.save()
             messages.success(request,'Shipping address has been added!!!')
