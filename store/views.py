@@ -4,13 +4,14 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .import forms
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.http import JsonResponse
 import json
 from cart.cart import Cart
-
+from payment.models import *
+from payment.forms import *
+from .forms import *
 # Create your views here.
 # @login_required(login_url='login_view')
 def home(request):
@@ -124,7 +125,8 @@ def update_password(request):
 def update_user_info(request):
     if request.user.is_authenticated: 
         current_user = CustomerProfile.objects.get(user__id=request.user.id)
-        update_form = forms.UserInfoForm(request.POST or None, instance=current_user )
+       
+        update_form = UserInfoForm(request.POST or None, instance=current_user )
 
         if update_form.is_valid():
             update_form.save()
@@ -165,3 +167,17 @@ def search_product(request):
     
         return render(request, 'home.html', {'products' : products})
 
+
+def add_shipping_address(request):
+    if request.user.is_authenticated: 
+        shipping_user = ShippingAddress.objects.get(user__id=request.user.id)
+        shipping_form = ShippingForm(request.POST or None, instance=shipping_user)
+
+        if shipping_form.is_valid():
+            shipping_form.save()
+            messages.success(request,'Shipping address has been added!!!')
+            return redirect('home')
+        return render(request, "add_shipping_address.html", {'shipping_form':shipping_form})
+    else:
+        messages.success(request, "You must be logged in to access this page..")
+        return redirect('home')

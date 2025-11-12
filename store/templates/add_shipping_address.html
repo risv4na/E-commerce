@@ -4,7 +4,7 @@
 <header class="bg-dark py-5">
     <div class="container px-4 px-lg-5 my-5">
         <div class="text-center text-white">
-            <h1 class="display-4 fw-bolder">Update your profile info..!!</h1>
+            <h1 class="display-4 fw-bolder">Update shipping details..!!</h1>
             <p class="lead fw-normal text-white-50 mb-0">You can update your profile here. make your day great!!!</p>
         </div>
     </div>
@@ -17,7 +17,7 @@
         <center>
             <div class="col-8">
                    
-                <form method="post" action="{% url 'update_user_info' %}">
+                <form method="post" action="{% url 'add_shipping_address' %}">
                     {% csrf_token %}
                     {% if error %}
                         <div class="alert alert-danger" role="alert">
@@ -36,12 +36,11 @@
                         <label class="form-check-label" for="exampleCheck1">Check me out</label>
                     </div> -->
                     
-                    {{ update_form.as_p }}
+                    {{ shipping_form.as_p }}
 
             
                     <br>
                     <button type="submit" class="btn btn-secondary">Update</button> 
-                    <p>Do you want to update your password?<a href="{% url 'update_password' %}">Update Password</a></p>
 
                 </form>
 
