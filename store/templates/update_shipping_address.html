@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<header class="bg-dark py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder">Update shipping details..!!</h1>
+            <p class="lead fw-normal text-white-50 mb-0">You can add your shipping here. make your day great!!!</p>
+        </div>
+    </div>
+</header>
+
+<br> <br>
+
+<div class="container">
+    <div class="row">
+        <center>
+            <div class="col-8">
+                   
+                <form method="post" action="">
+                    {% csrf_token %}
+                    {% if error %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ error }}
+                        </div>
+                    {% endif %}
+                    <br><br><br>
+                    <h3><strong>Update Shipping Address</strong></h3>
+                    <br>
+                    {{ shipping_form.as_p }}
+                    <br>
+                    <button type="submit" class="btn btn-secondary">Update</button> 
+
+                </form>
+
+            </div>
+        </center>
+    </div>
+</div>
+
+<br> <br> <br> <br> <br>
+
+
+
+
+{% endblock %}

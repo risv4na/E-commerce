@@ -1,0 +1,104 @@
+
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<header class="bg-dark py-5">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="text-center text-white">
+                    <h1 class="display-4 fw-bolder">Billing inofo...</h1>
+                    <p class="lead fw-normal text-white-50 mb-0">This is temporary..!!!</p>
+                </div>
+            </div>
+        </header>
+<br> <br>
+
+<div class="container">
+    <div class="card">
+  <div class="card-header">
+    Order summery
+  </div>
+  {% for product in cart_products %}
+  <div class="card-body">
+        {{ product.name }}
+        {% if product.in_sale %}
+            <p class="card-text"><small class="text-body-secondary"><strike>RS {{ product.price }}/-</strike> &nbsp; RS {{ product.sale_price }}/-  </small></p>
+                                        <!-- <strike><p class="card-text"><small class="text-body-secondary">k</small></p></strike> -->
+        {% else %}
+            <p class="card-text"><small class="text-body-secondary">RS {{ product.price }}/-  </small></p>
+        {% endif %}
+        
+       {% for key, value in quantity.items %}
+            {% if key == product.id|slugify %}
+                Quantity: {{ value }}
+            {% endif %}
+        {% endfor %}
+      
+  </div>
+  {% endfor %}
+  <div style = "text-align:right; margin:10px;">
+        <h4>Total: {{ total }} </h4>
+        <a href="{% url 'cart_summery' %}" class="btn btn-sm btn-outline-secondary">Update Items</a>
+    </div>
+</div>
+<br><br>
+    {% if user.is_authenticated %}
+        <div class="card">
+        <div class="card-header">
+        Choose shipping address
+        </div>
+        {% if shipping_address %}
+            <ul class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Address</a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                    <li><hr class="dropdown-divider" /></li>
+                    {% for shipping_address in shipping_address %}
+                        <li><a class="dropdown-item" href="">{{ shipping_address.address_type }}</a></li>
+                    {% endfor %}
+                </ul>
+            </ul>
+            {% else %}
+            <a href="{% url 'add_shipping_address' %}">
+                <button type="submit" class="btn btn-secondary" style="margin: 10px;">Add shipping address</button> 
+            </a>
+            {% endif %}
+            
+            
+        </div>
+        <div align="right" style="margin: 20px;">
+            <a href="#" class="btn btn-success">Pay now</a>
+        </div>
+        
+    {% else %}
+    
+        <form method="post" action="#">
+                    {% csrf_token %}
+                    {% if error %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ error }}
+                        </div>
+                    {% endif %}
+                    <br><br><br>
+                    <h3><strong>Shipping Address</strong></h3>
+                    <br>
+                    {{ shipping_address.as_p }}
+                    <br>
+                    <button type="submit" class="btn btn-success">Pay now</button> 
+
+                </form>
+        
+        
+        
+    {% endif %}
+
+
+
+</div>
+
+
+
+<br> <br> <br> <br> <br> <br> <br> <br> <br> <br> 
+
+
+
+{% endblock %}

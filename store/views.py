@@ -171,16 +171,42 @@ def search_product(request):
 
 def add_shipping_address(request):
     if request.user.is_authenticated: 
-        if ShippingAddress.objects.filter(user__id=request.user.id).exists():
-            shipping_user = ShippingAddress.objects.get(user__id=request.user.id)
-        else:
-            shipping_user = ShippingAddress.objects.create(user=request.user)
-        shipping_form = ShippingForm(request.POST or None, instance=shipping_user)
+        shipping_address = ShippingAddress.objects.filter(user=request.user)
+        shipping_form = ShippingForm(request.POST or None)
         if shipping_form.is_valid():
-            shipping_form.save()
+            address = shipping_form.save(commit=False)
+            address.user = request.user
+            address.save()
             messages.success(request,'Shipping address has been added!!!')
             return redirect('home')
-        return render(request, "add_shipping_address.html", {'shipping_form':shipping_form})
+        return render(request, "add_shipping_address.html", {'shipping_form':shipping_form, 'shipping_address':shipping_address})
     else:
         messages.success(request, "You must be logged in to access this page..")
         return redirect('home')
+
+def update_shipping_address(request,id):
+    if request.user.is_authenticated: 
+        shipping_user = ShippingAddress.objects.get(id=id, user=request.user)
+        shipping_form = ShippingForm(request.POST or None, instance=shipping_user)
+        if shipping_form.is_valid():
+            shipping = shipping_form.save(commit=False)
+            shipping.user = request.user
+            shipping.save()
+            messages.success(request,'Shipping address has been Updated!!!')
+            return redirect('home')
+        return render(request, "update_shipping_address.html", {'shipping_form':shipping_form})
+    else:
+        messages.success(request, "You must be logged in to access this page..")
+        return redirect('home')
+
+
+
+def delete_shipping_address(request):
+    print('hello')
+    id = int(request.POST.get('product_id'))
+    print(id)
+    shipping_address = ShippingAddress.objects.get(id=id)
+    shipping_address.delete()
+    response = JsonResponse({'message':"success"})
+    return response
+

@@ -4,8 +4,8 @@
 <header class="bg-dark py-5">
     <div class="container px-4 px-lg-5 my-5">
         <div class="text-center text-white">
-            <h1 class="display-4 fw-bolder">Update shipping details..!!</h1>
-            <p class="lead fw-normal text-white-50 mb-0">You can update your profile here. make your day great!!!</p>
+            <h1 class="display-4 fw-bolder">Add shipping details..!!</h1>
+            <p class="lead fw-normal text-white-50 mb-0">You can add your shipping here. make your day great!!!</p>
         </div>
     </div>
 </header>
@@ -13,6 +13,25 @@
 <br> <br>
 
 <div class="container">
+    <div class="card">
+                    <div class="card-header">
+                    Shipping address
+                    </div>
+                        {% for shipping_address in shipping_address %}
+                            <div class="card-body" style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <h5 class="card-title" style="margin: 0p;">{{ shipping_address.address_type }}</h5>
+                                    <p class="card-text" style="margin: 0p;">{{ shipping_address.shipping_address1 }}</p>
+                                </div>
+                                <div>
+                                    <a href="{% url 'update_shipping_address' shipping_address.id %}" class="btn btn-primary">View/Update</a>
+                                    <button class="btn btn-danger mt-auto" value="{{ shipping_address.id }}" id="delete-address">Delete</button>
+                            
+                                </div>
+                              
+                            </div>
+                        {% endfor %}
+                    </div>
     <div class="row">
         <center>
             <div class="col-8">
@@ -35,12 +54,14 @@
                         <input type="checkbox" class="form-check-input" id="exampleCheck1">
                         <label class="form-check-label" for="exampleCheck1">Check me out</label>
                     </div> -->
-                    
+                    <br><br><br>
+                    <h3><strong>Add Shipping Address</strong></h3>
+                    <br>
                     {{ shipping_form.as_p }}
 
             
                     <br>
-                    <button type="submit" class="btn btn-secondary">Update</button> 
+                    <button type="submit" class="btn btn-secondary">Add</button> 
 
                 </form>
 
@@ -49,9 +70,35 @@
     </div>
 </div>
 
+<!-- delete_address -->
+
 <br> <br> <br> <br> <br>
 
 
 
+<script>
+    $(document).on('click', '#delete-address', function(e){
+        console.log("worked this remove")
+        e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'delete_shipping_address' %}",
+            data: {
+                product_id: $(this).val(),
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                action: 'post',
+            },
+
+            success: function(json){
+                console.log(json)
+                location.reload();
+            },
+
+            error: function(xhr, errmsg, err){
+                console.log('error')
+            }
+        });
+    })
+</script>
 
 {% endblock %}

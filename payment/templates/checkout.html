@@ -1,0 +1,125 @@
+
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<header class="bg-dark py-5">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="text-center text-white">
+                    <h1 class="display-4 fw-bolder">Checkout...</h1>
+                    <p class="lead fw-normal text-white-50 mb-0">Review your order..!!!</p>
+                </div>
+            </div>
+        </header>
+<br> <br>
+
+<div class="container">
+    <div class="card">
+  <div class="card-header">
+    Order summery
+  </div>
+  {% for product in cart_products %}
+  <div class="card-body">
+        {{ product.name }}
+        {% if product.in_sale %}
+            <p class="card-text"><small class="text-body-secondary"><strike>RS {{ product.price }}/-</strike> &nbsp; RS {{ product.sale_price }}/-  </small></p>
+                                        <!-- <strike><p class="card-text"><small class="text-body-secondary">k</small></p></strike> -->
+        {% else %}
+            <p class="card-text"><small class="text-body-secondary">RS {{ product.price }}/-  </small></p>
+        {% endif %}
+        
+       {% for key, value in quantity.items %}
+            {% if key == product.id|slugify %}
+                Quantity: {{ value }}
+            {% endif %}
+        {% endfor %}
+      
+  </div>
+  {% endfor %}
+  <div style = "text-align:right; margin:10px;">
+        <h4>Total: {{ total }} </h4>
+        <a href="{% url 'cart_summery' %}" class="btn btn-sm btn-outline-secondary">Update Items</a>
+    </div>
+</div>
+<br><br>
+    {% if user.is_authenticated %}
+  
+      <form method="post" action="{% url 'billing_info' %}">
+    {% csrf_token %}
+
+    <div class="card">
+        <div class="card-header">Choose shipping address</div>
+
+        {% if shipping_address %}
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button"
+                        id="dropdownMenuButton" data-bs-toggle="dropdown">
+                    Select shipping address
+                </button>
+
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    {% for addr in shipping_address %}
+                        <li>
+                            <a class="dropdown-item select-address"
+                               data-id="{{ addr.id }}">
+                                {{ addr.address_type }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <input type="hidden" name="selected_address_id" id="selected_address_id">
+
+        {% else %}
+            <a href="{% url 'add_shipping_address' %}">
+                <button type="button" class="btn btn-secondary m-3">Add shipping address</button>
+            </a>
+        {% endif %}
+    </div>
+
+    <div align="right" style="margin:20px;">
+        <button type="submit" class="btn btn-success">Continue</button>
+    </div>
+</form>
+
+        
+    {% else %}
+    
+          <form method="post" action="{% url 'billing_info' %}">
+                    {% csrf_token %}
+                    {% if error %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ error }}
+                        </div>
+                    {% endif %}
+                    <br><br><br>
+                    <h3><strong>Shipping Address</strong></h3>
+                    <br>
+                    {{ shipping_address.as_p }}
+                    <br>
+                    <button type="submit" class="btn btn-success">Continue</button> 
+
+                </form>
+        
+        
+        
+    {% endif %}
+
+
+
+</div>
+
+
+
+<br> <br> <br> <br> <br> <br> <br> <br> <br> <br> 
+
+<script>
+document.addEventListener("click", function(e) {
+    if (e.target.classList.contains("select-address")) {
+        let id = e.target.getAttribute("data-id");
+        document.getElementById("selected_address_id").value = id;
+    }
+});
+</script>
+
+{% endblock %}

@@ -14,5 +14,6 @@ urlpatterns = [
     path('update_user_info/', update_user_info, name='update_user_info'),
     path('search_product/', search_product, name="search_product"),
     path('add_shipping_address/', add_shipping_address, name="add_shipping_address"),
-
+    path('update_shipping_address/<int:id>', update_shipping_address, name="update_shipping_address"),
+    path('delete_shipping_address/', delete_shipping_address, name="delete_shipping_address"),
 ]
